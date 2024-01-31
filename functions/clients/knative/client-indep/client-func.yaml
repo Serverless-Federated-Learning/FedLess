@@ -1,0 +1,17 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: fl-client-func
+  namespace: default
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/class: "kpa.autoscaling.knative.dev"
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "1m"
+        autoscaling.knative.dev/metric: "concurrency"
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: docker.io/kkyfury/fedless-knative-client:v1
+        

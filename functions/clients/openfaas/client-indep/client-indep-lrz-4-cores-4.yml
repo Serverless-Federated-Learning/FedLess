@@ -1,0 +1,99 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://138.246.235.151:31112
+functions:
+  client-indep-66:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-66
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 300m
+      memory: 1000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-67:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-67
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 300m
+      memory: 1000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-68:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-68
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 300m
+      memory: 1000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-69:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-69
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 300m
+      memory: 1000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-70:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: andreasgrafberger/faas-func-fedless-70
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 300m
+      memory: 1000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m

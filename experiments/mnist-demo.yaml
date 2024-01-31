@@ -1,0 +1,1046 @@
+database:
+  host: 138.246.238.4
+  port: 31330
+  username: fedless
+  password: fedless
+
+file_server:
+  host: 138.246.238.4
+  port: 31715
+evaluator:
+  params:
+    type: openfaas
+    url: http://138.246.234.228:31112/function/evaluator
+  type: openfaas
+
+aggregator:
+  hyperparams:
+    tolerance: 5
+    buffer_ratio: 0.5
+  function:
+    params:
+      type: openfaas
+      url: http://10.195.7.170:31112/function/aggregator
+    type: openfaas
+
+clients:
+  hyperparams:
+    epochs: 5
+    batch_size: 32
+    optimizer:
+      class_name: "Adam"
+      config:
+        name: "Adam"
+        learning_rate: 0.001
+    fedprox:
+      mu: 0.001
+    SGD_learning_rate: 0.001        
+    fednova:
+      mu: 0.02
+    metrics:
+      - accuracy
+  functions:
+    # GCP - GPUs 4*4
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.90.228.79:31112/function/gpu-client-1
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.90.228.79:31112/function/gpu-client-2
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.90.228.79:31112/function/gpu-client-3
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.90.228.79:31112/function/gpu-client-4
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.79.222.189:31112/function/gpu-client-1
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.79.222.189:31112/function/gpu-client-2
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.79.222.189:31112/function/gpu-client-3
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.79.222.189:31112/function/gpu-client-4
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.173.207.91:31112/function/gpu-client-1
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.173.207.91:31112/function/gpu-client-2
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.173.207.91:31112/function/gpu-client-3
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://34.173.207.91:31112/function/gpu-client-4
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.230.18.85:31112/function/gpu-client-1
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.230.18.85:31112/function/gpu-client-2
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.230.18.85:31112/function/gpu-client-3
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.230.18.85:31112/function/gpu-client-4
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.237.22.105:31112/function/gpu-client-1
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.237.22.105:31112/function/gpu-client-2
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.237.22.105:31112/function/gpu-client-3
+    #     type: openfaas
+    # - function:
+    #     params:
+    #       type: openfaas
+    #       url: http://35.237.22.105:31112/function/gpu-client-4
+    #     type: openfaas  
+
+    # node 5 -> v20 -> 30 clients
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-1
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-2
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-3
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-4
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-5
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-6
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-7
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-8
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-9
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-10
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-11
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-12
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-13
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-14
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-15
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-16
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-17
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-18
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-19
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-20
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-21
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-22
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-23
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-24
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-25
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-26
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-27
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-28
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-29
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.7.85:31112/function/client-30
+        type: openfaas
+    # Fedless v40 master 2 -> v40*5 -> 150 clients
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-1
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-2
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-3
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-4
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-5
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-6
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-7
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-8
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-9
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-10
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-11
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-12
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-13
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-14
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-15
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-16
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-17
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-18
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-19
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-20
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-21
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-22
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-23
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-24
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-25
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-26
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-27
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-28
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-29
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-30
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-31
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-32
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-33
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-34
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-35
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-36
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-37
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-38
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-39
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-40
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-41
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-42
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-43
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-44
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-45
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-46
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-47
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-48
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-49
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-50
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-51
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-52
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-53
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-54
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-55
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-56
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-57
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-58
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-59
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-60
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-61
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-62
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-63
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-64
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-65
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-66
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-67
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-68
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-69
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-70
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-71
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-72
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-73
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-74
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-75
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-76
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-77
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-78
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-79
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-80
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-81
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-82
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-83
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-84
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-85
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-86
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-87
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-88
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-89
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-90
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-91
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-92
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-93
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-94
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-95
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-96
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-97
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-98
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-99
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-100
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-101
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-102
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-103
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-104
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-105
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-106
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-107
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-108
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-109
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-110
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-111
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-112
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-113
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-114
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-115
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-116
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-117
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-118
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-119
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-120
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-121
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-122
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-123
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-124
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-125
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-126
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-127
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-128
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-129
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-130
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-131
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-132
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-133
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-134
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-135
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-136
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-137
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-138
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-139
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-140
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-141
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-142
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-143
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-144
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-145
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-146
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-147
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-148
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-149
+        type: openfaas
+    - function:
+        params:
+          type: openfaas
+          url: http://10.195.9.245:31112/function/client-150
+        type: openfaas

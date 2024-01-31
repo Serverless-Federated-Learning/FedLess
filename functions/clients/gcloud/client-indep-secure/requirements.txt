@@ -1,0 +1,1 @@
+git+https://${GITHUB_AUTH_TOKEN}:x-oauth-basic@github.com/andreas-grafberger/thesis-code${GIT_COMMIT_IDENTIFIER}#egg=fedless

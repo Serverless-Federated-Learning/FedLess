@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 80;
+        location / {
+            root /data/www;
+        }
+        location /data/ {
+            autoindex on;
+            alias /datasets/;
+        }
+      }
+    }

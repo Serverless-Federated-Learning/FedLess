@@ -1,0 +1,24 @@
+#Policies: # The policies associated with the new user pool.
+#  PasswordPolicy:  # The password policy.
+#    MinimumLength: 0  # The minimum length of the password policy that you have set.
+#    RequireUppercase: true # In the password policy that you have set, refers to whether you have required users to use at least one uppercase letter in their password.
+#    RequireLowercase: true # In the password policy that you have set, refers to whether you have required users to use at least one lowercase letter in their password.
+#    RequireNumbers: true # In the password policy that you have set, refers to whether you have required users to use at least one number in their password.
+#    RequireSymbols: true # In the password policy that you have set, refers to whether you have required users to use at least one symbol in their password.
+#    TemporaryPasswordValidityDays: 0 # In the password policy you have set, refers to the number of days a temporary password is valid.
+AutoVerifiedAttributes: # The attributes to be auto-verified.
+- email
+#AliasAttributes: # Attributes supported as an alias for this user pool.
+#- preferred_username
+#UsernameAttributes: # Specifies whether email addresses or phone numbers can be specified as usernames when a user signs up.
+#- email
+#  DefaultEmailOption: CONFIRM_WITH_LINK # The default email option. Valid values are: CONFIRM_WITH_LINK, CONFIRM_WITH_CODE.
+MfaConfiguration: OFF # Specifies MFA configuration details. Valid values are: OFF, ON, OPTIONAL.
+UserPoolTags: # The tag keys and values to assign to the user pool.
+  KeyName: ''
+AdminCreateUserConfig: # The configuration for AdminCreateUser requests.
+  AllowAdminCreateUserOnly: false  # Set to True if only the administrator is allowed to create user profiles.
+UserPoolAddOns: # Used to enable advanced security risk detection.
+  AdvancedSecurityMode: OFF  # [REQUIRED] The advanced security mode. Valid values are: OFF, AUDIT, ENFORCED.
+UsernameConfiguration: # You can choose to set case sensitivity on the username input for the selected sign-in option.
+  CaseSensitive: true  # [REQUIRED] Specifies whether username case sensitivity will be applied for all users in the user pool through Cognito APIs.

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: dataset-volume
+              mountPath: /datasets
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: dataset-volume
+          hostPath:
+            path: /datasets
+            type: Directory
+      tolerations:
+      - key: "gpu"
+        operator: "Exists"
+        effect: "NoSchedule"

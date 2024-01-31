@@ -1,0 +1,4 @@
+./flower-logs/
+*.pdf
+*.err
+*.out

@@ -1,0 +1,11 @@
+pytest==6.2.2
+pytest-cov==2.11.1
+black==22.10.0
+requests-mock==1.8.0
+mongomock~=3.22.1
+httpretty~=1.0.5
+jupyterlab
+memory_profiler~=0.58
+pytest-asyncio
+pymongo-inmemory
+SciencePlots

@@ -1,0 +1,87 @@
+whisk:
+  ingress:
+    type: NodePort
+    apiHostName: $(hostname -I | cut -d' ' -f1)
+    apiHostPort: 31001
+  limits:
+    actionsInvokesPerminute: 999
+    actionsInvokesConcurrent: 999
+    triggersFiresPerminute: 999
+    actionsSequenceMaxlength: 999
+    actions:
+      memory:
+        max: "5g"
+      time:
+        max: "10m"
+    activation:
+      payload:
+        max: "128000000"
+  containerPool:
+    userMemory: "204800m"
+  loadbalancer:
+    blackbox-fraction: "100%"
+
+k8s:
+  persistence:
+    enabled: false
+# A single node cluster; so disable affinity
+# affinity:
+#   enabled: false
+# toleration:
+#   enabled: false
+
+nginx:
+  httpsNodePort: 31001
+invoker:
+  jvmHeapMB: "1024"
+  options: "-Dwhisk.spi.LogStoreProvider=org.apache.openwhisk.core.containerpool.logging.LogDriverLogStoreProvider"
+    # this is for single node cluster only
+    #  "-Dwhisk.kubernetes.user-pod-node-affinity.enabled=false"
+  containerFactory:
+    impl: "kubernetes"
+    kubernetes:
+      replicaCount: 2
+controller:
+  replicaCount: 2
+metrics:
+  prometheusEnabled: true
+  userMetricsEnabled: true
+
+
+
+
+# whisk:
+#   ingress:
+#     type: NodePort
+#     apiHostName: 192.168.129.86
+#     apiHostPort: 31001
+#   limits:
+#     actions:
+#       memory:
+#         max: "5g"
+#       time:
+#         max: "10m"
+#     activation:
+#       payload:
+#         max: "128000000"
+#   containerPool:
+#     userMemory: "4096m"
+#   loadbalancer:
+#     blackbox-fraction: "100%"
+
+# k8s:
+#   persistence:
+#     enabled: false
+# nginx:
+#   httpsNodePort: 31001
+# invoker:
+#   containerFactory:
+#     impl: "kubernetes"
+#     kubernetes:
+#       replicaCount: 2
+# controller:
+#   replicaCount: 2
+# metrics:
+#   prometheusEnabled: true
+# metrics:
+#   userMetricsEnabled: true

@@ -1,0 +1,89 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Cognito Tokens</title>
+</head>
+
+<body>
+
+<div id="token-container">
+    <h1>ID Token</h1>
+    <p id="id_token"></p>
+    <h1>Access Token</h1>
+    <p id="access_token"></p>
+</div>
+<div style="display: none;" id="deployment_config_container">
+    <h1>Deployment Config</h1>
+    <pre id="deployment_config_content"></pre>
+</div>
+
+</body>
+<script>
+    function getUrlVars() {
+        var vars = {};
+        window.location.href.replace(/[#?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+    function getUrlParam(parameter, defaultvalue) {
+        var urlparameter = defaultvalue;
+        if (window.location.href.indexOf(parameter) > -1) {
+            urlparameter = getUrlVars()[parameter];
+        }
+        return urlparameter;
+    }
+
+
+    var idToken = getUrlParam('id_token', 'empty');
+    var accessToken = getUrlParam('access_token', 'empty');
+
+    document.querySelector("#id_token").textContent = idToken;
+    document.querySelector("#access_token").textContent = accessToken;
+
+
+    if (accessToken !== "empty") {
+        fetch("https://138.246.233.67:31001/api/v1/web/guest/default/create_resource_server.json",
+            {
+                method: "POST",
+                body: JSON.stringify({}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            })
+            .then(data => data.json())
+            .then(data => data["body"])
+            .then(data => {
+                document.querySelector("#deployment_config_container").style.display = "block";
+                document.querySelector("#deployment_config_content").innerHTML = data;
+            })
+    }
+
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: Calibri, sans-serif;
+    }
+
+    #token-container {
+        padding: 2rem 0;
+    }
+
+    #token-container h1 {
+        margin-top: 1rem;
+    }
+
+    body {
+        margin: 0 auto;
+        max-width: 80vw;
+        word-wrap: break-word;
+    }
+</style>
+</html>
+

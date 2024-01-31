@@ -1,0 +1,25 @@
+service: invoker
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+  stage: dev
+  region: eu-central-1
+  memorySize: 256
+  timeout: 30 # Note: API Gateway current maximum is 30 seconds
+  ecr:
+    images:
+      invokerimage:
+        path: .
+
+functions:
+  invoker:
+    image: invokerimage
+    events:
+      - http:
+          path: federated/invoker
+          method: post
+          integration: lambda-proxy

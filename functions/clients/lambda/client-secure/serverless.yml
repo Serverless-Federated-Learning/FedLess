@@ -1,0 +1,38 @@
+service: client-secure
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+  stage: dev
+  region: eu-central-1
+  memorySize: 2048
+  timeout: 30 # Note: API Gateway current maximum is 30 seconds
+  ecr:
+    images:
+      baseimage:
+        path: .
+  httpApi:
+    authorizers:
+      # WARNING: DO NOT PUT ANYTHING HERE OR BELOW FOR DEPLOYMENT SCRIPT TO WORK
+      jwtAuthorizer:
+        identitySource: $request.header.Authorization
+        issuerUrl: https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_Ay4jDCguX
+        audience:
+          - 16q863gk2kggfen78uf5aa2o23
+
+functions:
+  hello:
+    image: baseimage
+    events:
+      - httpApi:
+          path: /client-jwt-authorized
+          method: POST
+          integration: lambda-proxy
+          #private: true
+          authorizer:
+            name: jwtAuthorizer
+            scopes:
+              - client-functions/invoke
