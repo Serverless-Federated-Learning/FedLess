@@ -36,7 +36,8 @@ The system design for FedLess is shown above. It contains the following componen
 
 7- **Serverless Parallel Transfer Learning for FedMD**: We leverage [Ray](https://github.com/ray-project/ray) to enable faster and efficient transfer learning required in the initial stage of the FedMD algorithm.
 
-
+### Deploying Ray with Kubernetes
+The scripts for deployment can be found in the [scripts directory](./scripts/deployment_scripts/ray/).
 
 ## Serverless FedMD Workflow
 The figure below describes the implementation of the FedMD algorithm using serverless computing in FedLess.
