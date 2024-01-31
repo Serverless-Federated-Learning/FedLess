@@ -81,7 +81,7 @@ With our experiment results, we observed that FedDF demonstrates greater robustn
 ![Serverless-fedmd-feddf-mnist](./serverless-kd/feddf-cifar-accuracy.png)
 
 ### Comparing Costs
-In our experiments, we observed the FedDF was almost always more cost efficient than FedMD with savings up 82.7%.
+In our experiments, we observed that FedDF was almost always more cost efficient than FedMD with savings up 82.7%.
 
 <!-- ## Citation.
 If you use serverless KD in your work, please cite our paper:
