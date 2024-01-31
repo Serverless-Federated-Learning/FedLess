@@ -213,3 +213,9 @@ If you use FedLess in your work, please cite our paper:
     url={https://doi.org/10.1109/BigData52589.2021.9672067}
 }
 ```
+## Contributors:
+
+1. Mohak Chadha
+2. Alexander Jensen
+3. Mohamed Elzohairy
+4. Andreas Grafberger
