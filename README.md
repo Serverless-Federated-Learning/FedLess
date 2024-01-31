@@ -215,7 +215,9 @@ If you use FedLess in your work, please cite our paper:
 ```
 ## Contributors:
 
-1. Mohak Chadha
-2. Alexander Jensen
-3. Mohamed Elzohairy
-4. Andreas Grafberger
+1. [Mohak Chadha](https://github.com/kky-fury)
+2. [Alexander Jensen](https://github.com/Ajexsen)
+3. [Mohamed Elzohairy](https://github.com/mohamedazab)
+4. [Andreas Grafberger](https://github.com/andreas-grafberger)
+5. [Anshul Jindal](https://github.com/ansjin)
+6. [Pulkit Khera](https://github.com/pulkit97)
