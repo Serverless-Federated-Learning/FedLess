@@ -5,10 +5,10 @@ import logging
 import subprocess
 import traceback
 from json.decoder import JSONDecodeError
-from typing import Dict, Callable, Type, Union, Tuple, List, Iterable
+from typing import Callable, Dict, Iterable, List, Tuple, Type, Union
 
-import pydantic
 import azure.functions
+import pydantic
 
 logger = logging.getLogger(__name__)
 
@@ -64,17 +64,11 @@ def create_gcloud_http_user_error_response(
     )
 
 
-def create_azure_success_response(
-    body: str, status: int = 200
-) -> azure.functions.HttpResponse:
-    return azure.functions.HttpResponse(
-        body=body, status_code=status, headers={"Content-Type": "application/json"}
-    )
+def create_azure_success_response(body: str, status: int = 200) -> azure.functions.HttpResponse:
+    return azure.functions.HttpResponse(body=body, status_code=status, headers={"Content-Type": "application/json"})
 
 
-def create_azure_user_error_response(
-    exception: Exception, status: int = 400
-) -> azure.functions.HttpResponse:
+def create_azure_user_error_response(exception: Exception, status: int = 400) -> azure.functions.HttpResponse:
     return azure.functions.HttpResponse(
         body=json.dumps(format_exception_for_user(exception)),
         status_code=status,
@@ -131,10 +125,7 @@ def lambda_proxy_handler(
 
 def gcloud_http_error_handler(
     caught_exceptions: Tuple[Type[Exception], ...],
-) -> Callable[
-    [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
-    Callable[["flask.Request"], Dict],
-]:
+) -> Callable[[Callable[["flask.Request"], Union[pydantic.BaseModel, str]]], Callable[["flask.Request"], Dict],]:
     """Decorator for Google Cloud Function handlers to,
     catch certain exceptions and respond to them with 400 errors."""
 
@@ -155,10 +146,7 @@ def gcloud_http_error_handler(
 
 def openfaas_action_handler(
     caught_exceptions: Tuple[Type[Exception], ...],
-) -> Callable[
-    [Callable[["flask.Request"], Union[pydantic.BaseModel, str]]],
-    Callable[["flask.Request"], Dict],
-]:
+) -> Callable[[Callable[["flask.Request"], Union[pydantic.BaseModel, str]]], Callable[["flask.Request"], Dict],]:
     """Decorator for OpenFaas Function handlers to,
     catch certain exceptions and respond to them with 400 errors."""
 
@@ -179,10 +167,7 @@ def openfaas_action_handler(
 
 def openwhisk_action_handler(
     caught_exceptions: Tuple[Type[Exception], ...],
-) -> Callable[
-    [Callable[[Dict], Union[pydantic.BaseModel, str]]],
-    Callable[[Dict], Dict],
-]:
+) -> Callable[[Callable[[Dict], Union[pydantic.BaseModel, str]]], Callable[[Dict], Dict],]:
     """Decorator for Openwhisk action handlers to parse input,
     catch certain exceptions and respond to them with 400 errors.
     Can deal with normal actions as well as web actions"""
@@ -193,8 +178,7 @@ def openwhisk_action_handler(
             # See https://github.com/apache/openwhisk/blob/master/docs/webactions.md#http-context for more info
             if any(map(lambda name: name.startswith("__ow_"), params.keys())):
                 params = {
-                    (key[len("__ow_") :] if key.startswith("__ow_") else key): value
-                    for key, value in params.items()
+                    (key[len("__ow_") :] if key.startswith("__ow_") else key): value for key, value in params.items()
                 }
             else:
                 params = {"body": params}
@@ -211,10 +195,7 @@ def openwhisk_action_handler(
                 if isinstance(result, str):
                     return create_http_success_response(result)
                 return create_http_success_response(result.json())
-            except tuple(i for i in caught_exceptions) + (
-                JSONDecodeError,
-                binascii.Error,
-            ) as e:
+            except caught_exceptions + (JSONDecodeError, binascii.Error) as e:
                 return create_http_user_error_response(e)
 
         return patched_func

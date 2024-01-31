@@ -1,9 +1,8 @@
 import os
-import tensorflow as tf
-import numpy as np
 
-# librosa==0.8
 import librosa
+import numpy as np
+import tensorflow as tf
 
 # import soundfile as sf
 
@@ -128,14 +127,10 @@ def get_spectrogram_and_label_id(audio, label):
     return spectrogram, label_id
 
 
-def sound_wave_to_mel_spectrogram(
-    sound_wave, sample_rate, spec_h=128, spec_w=128, length=1
-):
+def sound_wave_to_mel_spectrogram(sound_wave, sample_rate, spec_h=128, spec_w=128, length=1):
     NUM_MELS = spec_h
     HOP_LENGTH = int(sample_rate * length / (spec_w - 1))
-    mel_spec = librosa.feature.melspectrogram(
-        y=sound_wave, sr=sample_rate, hop_length=HOP_LENGTH, n_mels=NUM_MELS
-    )
+    mel_spec = librosa.feature.melspectrogram(y=sound_wave, sr=sample_rate, hop_length=HOP_LENGTH, n_mels=NUM_MELS)
     mel_spec_db = librosa.power_to_db(mel_spec, ref=np.max)
     return mel_spec_db
 
@@ -149,7 +144,7 @@ def get_mel_spec(waveform, sampling_rate):
     n_fft = 2048
     n_mels = 32
     hop_length = 512
-    mel_basis = librosa.filters.mel(sr=sampling_rate, n_fft=n_fft, n_mels=n_mels)
+    mel_basis = librosa.filters.mel(sampling_rate, 2048, n_mels)
     stft = librosa.stft(waveform.numpy(), n_fft=n_fft, hop_length=hop_length)
     s = np.dot(mel_basis, np.abs(stft) ** 2.0)
     mel_spec_db = librosa.power_to_db(s, ref=np.max)
@@ -173,9 +168,7 @@ def get_mel_and_label(file_path):
     # Concatenate the waveform with `zero_padding`, which ensures all audio
     # clips are of the same length.
     equal_length = tf.concat([waveform, zero_padding], 0)
-    mel_spec_db_tf = tf.py_function(
-        func=get_mel_spec, inp=[equal_length, sampling_rate], Tout=tf.float32
-    )
+    mel_spec_db_tf = tf.py_function(func=get_mel_spec, inp=[equal_length, sampling_rate], Tout=tf.float32)
     return mel_spec_db_tf, label_id
 
 

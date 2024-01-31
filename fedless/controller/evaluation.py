@@ -1,17 +1,17 @@
 import pymongo
 
-from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
-from fedless.datasets.dataset_loaders import DatasetNotLoadedError
 from fedless.common.models import (
+    DatasetLoaderConfig,
     EvaluatorResult,
-    MongodbConnectionConfig,
     ModelLoaderConfig,
+    MongodbConnectionConfig,
     SimpleModelLoaderConfig,
     TestMetrics,
-    DatasetLoaderConfig,
 )
 from fedless.common.persistence import ModelDao, ParameterDao, PersistenceError
 from fedless.common.serialization import ModelLoaderBuilder, SerializationError
+from fedless.datasets.dataset_loader_builder import DatasetLoaderBuilder
+from fedless.datasets.dataset_loaders import DatasetNotLoadedError
 
 
 class EvaluationError(BaseException):

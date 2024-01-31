@@ -3,20 +3,26 @@ from typing import Optional
 
 import pymongo
 import tensorflow as tf
-from fedless.aggregator.stall_aware_parameter_aggregator import (
-    StallAwareParameterAggregator,
+
+from fedless.aggregator.exceptions import AggregationError
+from fedless.aggregator.fed_avg_aggregator import (
+    FedAvgAggregator,
+    StreamFedAvgAggregator,
 )
-
-from fedless.datasets.benchmark_configurator import DatasetLoaderBuilder
-
+from fedless.aggregator.fed_df_aggregator import FedDFAggregator
+from fedless.aggregator.fed_md_aggregator import FedMDAggregator
+from fedless.aggregator.stall_aware_aggregation import (
+    StallAwareAggregator,
+    StreamStallAwareAggregator,
+)
 from fedless.common.models import (
-    MongodbConnectionConfig,
-    WeightsSerializerConfig,
     AggregatorFunctionResult,
+    DatasetLoaderConfig,
+    MongodbConnectionConfig,
+    SerializedModel,
     SerializedParameters,
     TestMetrics,
-    DatasetLoaderConfig,
-    SerializedModel,
+    WeightsSerializerConfig,
 )
 from fedless.common.models.aggregation_models import (
     AggregationHyperParams,
@@ -24,87 +30,15 @@ from fedless.common.models.aggregation_models import (
 )
 from fedless.common.persistence import (
     ClientResultDao,
+    ModelDao,
     ParameterDao,
     PersistenceError,
-    ModelDao,
 )
-from fedless.common.serialization import (
-    WeightsSerializerBuilder,
-    SerializationError,
-)
-
-from fedless.aggregator.parameter_aggregator import ParameterAggregator
-from fedless.aggregator.exceptions import AggregationError
-
-from fedless.aggregator.fed_avg_aggregator import (
-    FedAvgAggregator,
-    StreamFedAvgAggregator,
-)
-
-from fedless.aggregator.fedlesscan_aggregator import (
-    FedLesScanAggregator,
-    StreamFedLesScanAggregator,
-)
-
-from fedless.aggregator.fedscore_aggregator import (
-    FedScoreAggregator,
-    StreamFedScoreAggregator,
-)
-
-from fedless.aggregator.fednova_aggregator import (
-    FedNovaAggregator,
-    StreamFedNovaAggregator,
-)
-
-from fedless.aggregator.scaffold_aggregator import (
-    ScaffoldAggregator,
-    StreamScaffoldAggregator,
-)
-
-# from fedless.aggregator import *
+from fedless.common.serialization import SerializationError, WeightsSerializerBuilder
+from fedless.datasets.dataset_loader_builder import DatasetLoaderBuilder
 
 logger = logging.getLogger(__name__)
-
-
-def get_aggregator(
-    strategy: str,
-    round_id: int,
-    aggregation_hyper_params: AggregationHyperParams = None,
-) -> ParameterAggregator:
-    switcher = {
-        "fedavg": FedAvgAggregator,
-        "fedprox": FedAvgAggregator,
-        "fedlesscan": FedLesScanAggregator,
-        "fednova": FedNovaAggregator,
-        "scaffold": ScaffoldAggregator,
-        "fedscore": FedScoreAggregator,
-    }
-
-    switcher_online = {
-        "fedavg": StreamFedAvgAggregator,
-        "fedprox": StreamFedAvgAggregator,
-        "fedlesscan": StreamFedLesScanAggregator,
-        "fednova": StreamFedNovaAggregator,
-        "scaffold": StreamScaffoldAggregator,
-        "fedscore": StreamFedScoreAggregator,
-    }
-
-    aggregator_class = (
-        switcher_online.get(strategy, switcher_online["fedavg"])
-        if aggregation_hyper_params.aggregate_online
-        else switcher.get(strategy, switcher["fedavg"])
-    )
-
-    aggregator = (
-        aggregator_class(
-            current_round=round_id, aggregation_hyper_params=aggregation_hyper_params
-        )
-        if issubclass(aggregator_class, StallAwareParameterAggregator)
-        or aggregator_class == ScaffoldAggregator
-        or aggregator_class == FedNovaAggregator
-        else aggregator_class()
-    )
-    return aggregator
+logger.setLevel(logging.INFO)
 
 
 def default_aggregation_handler(
@@ -114,86 +48,74 @@ def default_aggregation_handler(
     serializer: WeightsSerializerConfig,
     test_data: Optional[DatasetLoaderConfig] = None,
     delete_results_after_finish: bool = True,
-    aggregation_strategy: AggregationStrategy = AggregationStrategy.FedAvg,
+    aggregation_strategy: AggregationStrategy = AggregationStrategy.PER_ROUND,
+    model_type: str = None,
+    action: str = None,
     aggregation_hyper_params: AggregationHyperParams = None,
 ) -> AggregatorFunctionResult:
 
     mongo_client = pymongo.MongoClient(database.url)
-    logger.info(
-        f"Aggregator ({aggregation_strategy}) invoked for session {session_id} and round {round_id}"
-    )
+    logger.info(f"Aggregator invoked for session {session_id} and round {round_id}")
     try:
-
         result_dao = ClientResultDao(mongo_client)
         parameter_dao = ParameterDao(mongo_client)
+        # logger.debug(f"Establishing database connection")
+        # aggregator = FedAvgAggregator()
 
-        aggregator = get_aggregator(
-            aggregation_strategy, round_id, aggregation_hyper_params
-        )
+        if aggregation_strategy == AggregationStrategy.PER_SESSION:
+            aggregator = StallAwareAggregator(round_id, aggregation_hyper_params)
+        elif aggregation_strategy == AggregationStrategy.PER_ROUND:
+            aggregator = FedAvgAggregator()
+        elif aggregation_strategy == AggregationStrategy.FED_MD:
+            aggregator = FedMDAggregator()
+        elif aggregation_strategy == AggregationStrategy.FED_DF:
 
-        previous_dic, previous_results = aggregator.select_aggregation_candidates(
-            mongo_client, session_id, round_id
-        )
-
-        logger.info(f"Aggregator got {len(previous_dic)} results for aggregation...")
-
-        previous_results = (
-            list(previous_results)
-            if not isinstance(previous_results, list)
-            else previous_results
-        )
-
-        logger.debug(f"Starting aggregation...")
-        aggregation_result = aggregator.aggregate(previous_results, previous_dic)
-
-        new_parameters, test_results = (
-            aggregation_result.new_global_weights,
-            aggregation_result.client_metrics,
-        )
-
-        logger.debug(f"Aggregation finished")
-
-        if (
-            aggregation_strategy == AggregationStrategy.SCAFFOLD
-            and aggregation_result.new_global_controls
-        ):
-            global_controls = aggregation_result.new_global_controls
-            logger.debug(f"Serializing global controls (SCAFFOLD)")
-            serialized_global_controls_str = WeightsSerializerBuilder.from_config(
-                serializer
-            ).serialize(global_controls)
-
-            serialized_global_controls = SerializedParameters(
-                blob=serialized_global_controls_str, serializer=serializer
+            aggregator = FedDFAggregator(
+                mongo_client=mongo_client,
+                session_id=session_id,
+                round_id=round_id,
+                model_type=model_type,
+                aggregation_hyper_params=aggregation_hyper_params,
             )
+            logger.info(f"Aggregator called for action : {action}")
 
+            # if action == "fedavg":
+
+            #     num_clients_aggregated = aggregator.model_type_fedavg()
+            #     return AggregatorFunctionResult(
+            #         new_round_id=round_id,
+            #         num_clients=num_clients_aggregated,
+            #     )
+
+            # elif action == "distillation":
+            num_clients_aggregated, test_metrics, test_cardinality = aggregator.ensemble_distillation()
+            test_metrics["model_type"] = model_type
+            test_metrics = TestMetrics(cardinality=test_cardinality, metrics=test_metrics)
+
+            return AggregatorFunctionResult(
+                new_round_id=round_id + 1,
+                num_clients=num_clients_aggregated,
+                test_results=test_metrics,
+                # global_test_results=global_test_metrics,
+            )
+            # else:
+            #     raise NotImplementedError
+
+        previous_dic, previous_results = aggregator.select_aggregation_candidates(mongo_client, session_id, round_id)
+        if aggregation_hyper_params.aggregate_online:
+            logger.debug(f"Using online aggregation")
+            aggregator = (
+                StreamStallAwareAggregator(round_id, aggregation_hyper_params)
+                if aggregation_strategy == AggregationStrategy.PER_SESSION
+                else StreamFedAvgAggregator()
+            )
         else:
-            serialized_global_controls = None
-
-        # aggregator
-        # cleanup and count results
-        count_func = result_dao.count_results_for_round
-        delete_func = result_dao.delete_results_for_round
-        cleanup_params = {"session_id": session_id, "round_id": round_id}
-
-        tolerance = aggregation_hyper_params.tolerance
-        if isinstance(aggregator, StallAwareParameterAggregator) and tolerance > 0:
-            count_func = result_dao.count_results_for_session
-            delete_func = result_dao.delete_results_for_session
-            cleanup_params.pop("round_id", None)
-
-        # only clean up process if asyn
-        if not aggregation_hyper_params.is_synchronous:
-            cleanup_params["tolerance_round_id"] = max(0, round_id - tolerance)
-            cleanup_params["file_ids"] = [result["file_id"] for result in previous_dic]
-            cleanup_params.pop("round_id", None)
-            count_func = lambda *args, **kwargs: len(previous_dic)
-            delete_func = result_dao.delete_results_by_file_ids
-
-        results_processed = count_func(**cleanup_params)
-        if delete_results_after_finish:
-            logger.debug(f"Deleting individual results...")
-            delete_func(**cleanup_params)
+            logger.debug(f"Loading results from database...")
+            previous_results = list(previous_results) if not isinstance(previous_results, list) else previous_results
+            logger.debug(f"Loading of {len(previous_results)} results finished")
+        logger.debug(f"Starting aggregation...")
+        new_parameters, test_results = aggregator.aggregate(previous_results, previous_dic)
+        logger.debug(f"Aggregation finished")
 
         global_test_metrics = None
         if test_data:
@@ -204,9 +126,7 @@ def default_aggregation_handler(
             test_data = DatasetLoaderBuilder.from_config(test_data).load()
             cardinality = test_data.cardinality()
             test_data = test_data.batch(aggregation_hyper_params.test_batch_size)
-            model: tf.keras.Model = tf.keras.models.model_from_json(
-                serialized_model.model_json
-            )
+            model: tf.keras.Model = tf.keras.models.model_from_json(serialized_model.model_json)
             model.set_weights(new_parameters)
             if not serialized_model.loss or not serialized_model.optimizer:
                 raise AggregationError("If compiled=True, a loss has to be specified")
@@ -216,32 +136,48 @@ def default_aggregation_handler(
                 metrics=serialized_model.metrics or [],
             )
             evaluation_result = model.evaluate(test_data, return_dict=True)
-            global_test_metrics = TestMetrics(
-                cardinality=cardinality, metrics=evaluation_result
-            )
+            global_test_metrics = TestMetrics(cardinality=cardinality, metrics=evaluation_result)
 
         logger.debug(f"Serializing model")
-        serialized_params_str = WeightsSerializerBuilder.from_config(
-            serializer
-        ).serialize(new_parameters)
+        serialized_params_str = WeightsSerializerBuilder.from_config(serializer).serialize(new_parameters)
 
-        serialized_params = SerializedParameters(
-            blob=serialized_params_str, serializer=serializer
-        )
+        serialized_params = SerializedParameters(blob=serialized_params_str, serializer=serializer)
 
         new_round_id = round_id + 1
         logger.debug(f"Saving model to database")
-        parameter_dao.save(
-            session_id=session_id,
-            round_id=new_round_id,
-            params=serialized_params,
-            global_controls=serialized_global_controls,
-        )
+        parameter_dao.save(session_id=session_id, round_id=new_round_id, params=serialized_params)
         logger.debug(f"Finished...")
+
+        # cleanup and count results
+
+        cleanup_params = {"mongo_client": mongo_client, "session_id": session_id, "round_id": round_id}
+
+        if aggregation_strategy == AggregationStrategy.PER_SESSION:
+            delete_func = result_dao.delete_results_for_session
+            count_func = result_dao.count_results_for_session
+            cleanup_params.pop("round_id", None)
+            cleanup_params.pop("mongo_client", None)
+
+        elif aggregation_strategy == AggregationStrategy.PER_ROUND:
+            delete_func = result_dao.delete_results_for_round
+            count_func = result_dao.count_results_for_round
+            cleanup_params.pop("round_id", None)
+            cleanup_params.pop("mongo_client", None)
+
+        elif aggregation_strategy == AggregationStrategy.FED_MD:
+            delete_func = aggregator.perform_round_db_cleanup
+
+        elif aggregation_strategy == AggregationStrategy.FED_DF:
+            delete_func = aggregator.perform_round_db_cleanup
+
+        # results_processed = count_func(**cleanup_params)
+        if delete_results_after_finish:
+            logger.debug(f"Deleting individual results...")
+            delete_func(**cleanup_params)
 
         return AggregatorFunctionResult(
             new_round_id=new_round_id,
-            num_clients=results_processed,
+            num_clients=len(previous_results),
             test_results=test_results,
             global_test_results=global_test_metrics,
         )
@@ -249,3 +185,7 @@ def default_aggregation_handler(
         raise AggregationError(e) from e
     finally:
         mongo_client.close()
+
+
+def perform_db_cleanup():
+    pass

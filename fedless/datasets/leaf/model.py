@@ -1,9 +1,7 @@
 from tensorflow import keras
 
 
-def create_femnist_cnn(
-    num_classes: int = 62, small: bool = False
-) -> keras.models.Sequential:
+def create_femnist_cnn(num_classes: int = 62, small: bool = False) -> keras.models.Sequential:
     model = keras.Sequential()
     model.add(keras.layers.InputLayer((28 * 28,)))
     model.add(keras.layers.Reshape((28, 28, 1)))

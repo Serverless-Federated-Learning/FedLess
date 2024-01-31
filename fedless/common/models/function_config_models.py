@@ -1,9 +1,7 @@
 from typing import Optional, Union
-from pydantic import (
-    Field,
-    BaseModel,
-    validator,
-)
+
+from pydantic import BaseModel, Field, validator
+
 from fedless.common.models.validation_func import params_validate_types_match
 
 
@@ -56,10 +54,39 @@ class AzureFunctionHTTPConfig(BaseModel):
     trigger_url: str
 
 
-class FaaSConfig(BaseModel):
-    auto_scaling: int = Field(default=0)
-    cool_off_time: int = Field(default=0)
-    exec_timeout: int = Field(default=300)
+class ModelParamConfig_3LayerCNN(BaseModel):
+    n1: int
+    n2: int
+    n3: int
+    dropout_rate: float
+
+
+class ModelParamConfig_2LayerCNN(BaseModel):
+    n1: int
+    n2: int
+    dropout_rate: float
+
+
+class ModelParamConfig_4LayerCNN(BaseModel):
+    n1: int
+    n2: int
+    n3: int
+    n4: int
+    dropout_rate: float
+
+
+class ModelParamConfigLSTM(BaseModel):
+    units: int
+    vocab_size: int
+    sequence_length: int
+    embedding_size: int
+
+
+class ModelConfig(BaseModel):
+    model_type: str
+    params: Union[
+        ModelParamConfig_3LayerCNN, ModelParamConfig_2LayerCNN, ModelParamConfig_4LayerCNN, ModelParamConfigLSTM
+    ]
 
 
 class FunctionInvocationConfig(BaseModel):
@@ -75,12 +102,9 @@ class FunctionInvocationConfig(BaseModel):
         OpenFaasFunctionConfig,
     ]
     invocation_delay: Optional[int] = 0
-    cool_start: bool = False
-    auto_scaling: int = Field(default=1)
+    model_config: Optional[ModelConfig]
 
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
+    _params_type_matches_type = validator("params", allow_reuse=True)(params_validate_types_match)
 
 
 class GCloudProjectConfig(BaseModel):
@@ -119,6 +143,4 @@ class FunctionDeploymentConfig(BaseModel):
     type: str
     params: OpenwhiskFunctionDeploymentConfig
 
-    _params_type_matches_type = validator("params", allow_reuse=True)(
-        params_validate_types_match
-    )
+    _params_type_matches_type = validator("params", allow_reuse=True)(params_validate_types_match)

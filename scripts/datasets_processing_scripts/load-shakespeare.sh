@@ -34,4 +34,4 @@ python3 -m pip install --upgrade pip
 python3 -m pip install -r <(sed '/^[tensorflow]/d' requirements.txt)
 cd data/shakespeare
 
-./preprocess.sh -s niid --sf 1.0 -k 64 -tf 0.9 -t sample --nochecksum
+./preprocess.sh -s iid --iu 0.1 --sf 1.0 -k 1024 -tf 0.9 -t sample --nochecksum

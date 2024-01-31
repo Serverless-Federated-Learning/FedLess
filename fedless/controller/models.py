@@ -1,36 +1,37 @@
-from typing import Optional, List
+from typing import Dict, List, Optional, Union
 
-from pydantic import BaseModel
+import pydantic
 
 from fedless.common.models import (
-    FunctionDeploymentConfig,
+    AggregationHyperParams,
     FunctionInvocationConfig,
     Hyperparams,
     MongodbConnectionConfig,
-    AggregationHyperParams,
 )
-from fedless.common.models.models import FileServerConfig
 
 
-class ClientFunctionConfig(BaseModel):
+class ClientFunctionConfig(pydantic.BaseModel):
     function: FunctionInvocationConfig
     hyperparams: Optional[Hyperparams]
     replicas: int = 1
 
 
-class ClientFunctionConfigList(BaseModel):
-    # cold start duration for mocking cold start
+class ClientFunctionConfigList(pydantic.BaseModel):
     functions: List[ClientFunctionConfig]
     hyperparams: Optional[Hyperparams]
 
 
-class AggregationFunctionConfig(BaseModel):
+class AggregationFunctionConfig(pydantic.BaseModel):
     function: FunctionInvocationConfig
     # configure aggregation hyper params has default values
     hyperparams: AggregationHyperParams
 
 
-class CognitoConfig(BaseModel):
+class AggregationFunctionConfigList(pydantic.BaseModel):
+    agg_functions: List[AggregationFunctionConfig]
+
+
+class CognitoConfig(pydantic.BaseModel):
     user_pool_id: str
     region_name: str
     auth_endpoint: str
@@ -39,10 +40,27 @@ class CognitoConfig(BaseModel):
     required_scopes: List[str] = ["client-functions/invoke"]
 
 
-class ExperimentConfig(BaseModel):
+class ClassDistributionConfig(pydantic.BaseModel):
+    private_class_mapping: Dict[str, str] = None
+    public_class_mapping: Dict[str, str] = None
+
+
+# class FedMDConfig(pydantic.BaseModel):
+#     models: List[ModelConfig]
+#     class_distribution: Optional[ClassDistributionConfig]
+
+
+# class FedDFConfig(pydantic.BaseModel):
+#     models: List[ModelConfig]
+#     class_distribution: Optional[ClassDistributionConfig]
+
+
+class ExperimentConfig(pydantic.BaseModel):
     cognito: Optional[CognitoConfig] = None
-    file_server: Optional[FileServerConfig] = None
     database: MongodbConnectionConfig
     evaluator: FunctionInvocationConfig
-    aggregator: AggregationFunctionConfig
+    aggregator: Union[AggregationFunctionConfigList, AggregationFunctionConfig]
     clients: ClientFunctionConfigList
+    # fedmd_config: Optional[FedMDConfig]
+    # feddf_config: Optional[FedDFConfig]
+    class_distribution: Optional[ClassDistributionConfig] = None

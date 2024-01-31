@@ -1,67 +1,50 @@
 from fedless.common.models import AggregationStrategy
-from fedless.controller.strategies.client_selection.random_selection import (
-    AsyncRandomClientSelection,
-)
+from fedless.controller.strategies.feddf_strategy import FedDFStrategy
 from fedless.controller.strategies.fedless_strategy import FedlessStrategy
-
-from fedless.controller.strategies.client_selection import (
-    RandomClientSelection,
+from fedless.controller.strategies.fedmd_strategy import FedMDStrategy
+from fedless.controller.strategies.Intelligent_selection import (
     DBScanClientSelection,
-    ScoreBasedClientSelection,
+    DBScanModelClientSelection,
+    RandomClientSelection,
 )
 
 
 def select_strategy(strategy: str, invocation_attrs: dict):
-
     switcher = {
-        "fedavg": FedlessStrategy(
-            selection_strategy=RandomClientSelection(),
-            aggregation_strategy=AggregationStrategy.FedAvg,
-            **invocation_attrs,
-        ),
-        "fedprox": FedlessStrategy(
-            selection_strategy=RandomClientSelection(),
-            aggregation_strategy=AggregationStrategy.FedProx,
-            **invocation_attrs,
-        ),
         "fedlesscan": FedlessStrategy(
             selection_strategy=DBScanClientSelection(
                 invocation_attrs["mongodb_config"],
                 invocation_attrs["session"],
                 invocation_attrs["save_dir"],
             ),
-            aggregation_strategy=AggregationStrategy.FedLesScan,
+            aggregation_strategy=AggregationStrategy.PER_SESSION,
             **invocation_attrs,
         ),
-        "fednova": FedlessStrategy(
+        "fedavg": FedlessStrategy(
             selection_strategy=RandomClientSelection(),
-            aggregation_strategy=AggregationStrategy.FedNova,
+            aggregation_strategy=AggregationStrategy.PER_ROUND,
             **invocation_attrs,
         ),
-        "scaffold": FedlessStrategy(
+        "fedprox": FedlessStrategy(
             selection_strategy=RandomClientSelection(),
-            aggregation_strategy=AggregationStrategy.SCAFFOLD,
+            aggregation_strategy=AggregationStrategy.PER_ROUND,
             **invocation_attrs,
         ),
-        "fedasync": FedlessStrategy(
-            selection_strategy=AsyncRandomClientSelection(
-                session_id=invocation_attrs["session"],
-                db_config=invocation_attrs["mongodb_config"],
-            ),
-            aggregation_strategy=AggregationStrategy.FedScore,
+        "fedmd": FedMDStrategy(
+            selection_strategy=RandomClientSelection(),
+            aggregation_strategy=AggregationStrategy.FED_MD,
             **invocation_attrs,
         ),
-        "fedscore": FedlessStrategy(
-            selection_strategy=ScoreBasedClientSelection(
-                session_id=invocation_attrs["session"],
-                buffer_ratio=invocation_attrs["buffer_ratio"],
-                db_config=invocation_attrs["mongodb_config"],
-                log_dir=invocation_attrs["save_dir"],
+        "feddf": FedDFStrategy(
+            selection_strategy=DBScanModelClientSelection(
+                invocation_attrs["mongodb_config"],
+                invocation_attrs["session"],
+                invocation_attrs["save_dir"],
             ),
-            aggregation_strategy=AggregationStrategy.FedScore,
+            aggregation_strategy=AggregationStrategy.FED_DF,
             **invocation_attrs,
         ),
     }
 
     # default to fedless strategy
-    return switcher.get(strategy, switcher["fedlesscan"])
+    return switcher.get(strategy, switcher["fedmd"])

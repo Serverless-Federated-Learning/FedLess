@@ -1,27 +1,21 @@
-from typing import Iterable, Optional, Dict, List, Iterator
+import json
+from enum import Enum
+from json import JSONDecodeError
+from pathlib import Path
+from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Union
 
+import requests
+import tensorflow as tf
+from pydantic import AnyHttpUrl, BaseModel, Field, validate_arguments
+from requests import RequestException
 
+from fedless.common.cache import cache
 from fedless.datasets.dataset_loaders import (
     DatasetFormatError,
     DatasetLoader,
     DatasetNotLoadedError,
     merge_datasets,
 )
-
-import json
-from json import JSONDecodeError
-from pathlib import Path
-from typing import Union, Dict, Iterator, List, Optional, Tuple
-
-import requests
-import tensorflow as tf
-from pydantic import BaseModel, validate_arguments, AnyHttpUrl
-from requests import RequestException
-
-from fedless.common.cache import cache
-
-from enum import Enum
-from pydantic import Field
 
 
 class LeafDataset(str, Enum):
@@ -33,12 +27,12 @@ class LeafDataset(str, Enum):
     REDDIT = "reddit"
     CELEBA = "celeba"
     SHAKESPEARE = "shakespeare"
-    SENT140 = "sent140"
 
 
 class LEAFConfig(BaseModel):
     """Configuration parameters for LEAF dataset loader"""
 
+    # TODO - change back to HTTP/PAth
     type: str = Field("leaf", const=True)
     dataset: LeafDataset
     location: Union[AnyHttpUrl, Path]
@@ -90,18 +84,14 @@ class LEAF(DatasetLoader):
     def users(self):
         return self._users
 
-    def _convert_dict_to_dataset(
-        self, file_content: Dict, user_indices: List[int] = None
-    ) -> tf.data.Dataset:
+    def _convert_dict_to_dataset(self, file_content: Dict, user_indices: List[int] = None) -> tf.data.Dataset:
         try:
             users = file_content["users"]
             user_data = file_content["user_data"]
             self._users = users
             for i, user in enumerate(users):
                 if not user_indices or i in user_indices:
-                    yield tf.data.Dataset.from_tensor_slices(
-                        self._process_user_data(user_data[user])
-                    )
+                    yield tf.data.Dataset.from_tensor_slices(self._process_user_data(user_data[user]))
         except (KeyError, TypeError, ValueError) as e:
             raise DatasetFormatError(e) from e
 
@@ -123,9 +113,7 @@ class LEAF(DatasetLoader):
     def _process_all_sources(self) -> Iterator[tf.data.Dataset]:
         for source in self._iter_dataset_files():
             file_content: Dict = self._read_source(source)
-            for dataset in self._convert_dict_to_dataset(
-                file_content, user_indices=self.user_indices
-            ):
+            for dataset in self._convert_dict_to_dataset(file_content, user_indices=self.user_indices):
                 yield dataset
 
     def _read_source(self, source: Union[AnyHttpUrl, Path]) -> Dict:
@@ -140,7 +128,7 @@ class LEAF(DatasetLoader):
             response.raise_for_status()
             return response.json()
         except ValueError as e:
-            raise DatasetFormatError(f"Invalid JSON returned from {url}") from e
+            raise DatasetFormatError(f"Invalid JSON returned from ${url}") from e
         except RequestException as e:
             raise DatasetNotLoadedError(e) from e
 

@@ -1,12 +1,12 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: http://138.246.235.203:31112
+  gateway: http://127.0.0.1:31112
 functions:
   client-indep-71:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-71
+    image: pulkitkhera97/faas-func-fedless-1
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -25,7 +25,7 @@ functions:
   client-indep-72:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-72
+    image: andreasgrafberger/faas-func-fedless-2
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -44,7 +44,7 @@ functions:
   client-indep-73:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-73
+    image: andreasgrafberger/faas-func-fedless-3
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -63,7 +63,7 @@ functions:
   client-indep-74:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-74
+    image: andreasgrafberger/faas-func-fedless-4
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:
@@ -82,7 +82,7 @@ functions:
   client-indep-75:
     lang: python3-http-debian
     handler: ./client-indep
-    image: andreasgrafberger/faas-func-fedless-75
+    image: andreasgrafberger/faas-func-fedless-5
     build_args:
       ADDITIONAL_PACKAGE: git
     limits:

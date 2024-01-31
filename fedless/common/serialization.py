@@ -5,7 +5,7 @@ import base64
 import binascii
 import io
 from json.decoder import JSONDecodeError
-from typing import TypeVar, Callable, Union, Optional, List, Dict
+from typing import Callable, Dict, List, Optional, TypeVar, Union
 
 import h5py
 import numpy as np
@@ -13,17 +13,17 @@ import tensorflow as tf
 
 from fedless.common.cache import cache
 from fedless.common.models import (
-    ModelSerializerConfig,
-    WeightsSerializerConfig,
-    PayloadModelLoaderConfig,
-    SimpleModelLoaderConfig,
-    ModelLoaderConfig,
-    H5FullModelSerializerConfig,
-    SerializedParameters,
-    Parameters,
     BinaryStringFormat,
+    H5FullModelSerializerConfig,
+    ModelLoaderConfig,
+    ModelSerializerConfig,
     NpzWeightsSerializerConfig,
+    Parameters,
+    PayloadModelLoaderConfig,
     SerializedModel,
+    SerializedParameters,
+    SimpleModelLoaderConfig,
+    WeightsSerializerConfig,
 )
 
 
@@ -34,7 +34,7 @@ class SerializationError(Exception):
 _RetT = TypeVar("_RetT")
 
 
-def serialize_model(model: tf.keras.Model) -> SerializedModel:
+def serialize_model(model: tf.keras.Model, model_type: str = None) -> SerializedModel:
     if not model.optimizer or not model.loss:
         raise SerializationError(f"Cannot serialize model as it is not compiled")
 
@@ -43,18 +43,13 @@ def serialize_model(model: tf.keras.Model) -> SerializedModel:
     return SerializedModel(
         model_json=model.to_json(),
         optimizer=tf.keras.optimizers.serialize(model.optimizer),
-        loss=(
-            tf.keras.losses.serialize(model.loss)
-            if not isinstance(model.loss, str)
-            else model.loss
-        ),
+        loss=(tf.keras.losses.serialize(model.loss) if not isinstance(model.loss, str) else model.loss),
         metrics=user_metrics,
+        model_type=model_type,
     )
 
 
-def h5py_serialization_error_handler(
-    func: Callable[..., _RetT]
-) -> Callable[..., _RetT]:
+def h5py_serialization_error_handler(func: Callable[..., _RetT]) -> Callable[..., _RetT]:
     """
     Executes the function and wraps and rethrows any unhandled exception as a SerializationError
     :param func: Any serialization function
@@ -86,9 +81,7 @@ def deserialize_parameters(serialized_params: SerializedParameters) -> Parameter
     elif serialized_params.string_format == BinaryStringFormat.NONE:
         blob_bytes = serialized_params.blob
     else:
-        raise SerializationError(
-            f"Binary string format {serialized_params.string_format} not known"
-        )
+        raise SerializationError(f"Binary string format {serialized_params.string_format} not known")
 
     return serializer.deserialize(blob_bytes)
 
@@ -198,9 +191,7 @@ class H5FullModelSerializer(ModelSerializer):
         self.save_traces = save_traces
 
     @classmethod
-    def from_config(
-        cls, config: H5FullModelSerializerConfig
-    ) -> H5FullModelSerializerConfig:
+    def from_config(cls, config: H5FullModelSerializerConfig) -> H5FullModelSerializerConfig:
         """
         Create serializer from config
         :param config: configuration object
@@ -216,9 +207,7 @@ class H5FullModelSerializer(ModelSerializer):
         :param model: Keras Model
         :return: raw bytes
         """
-        with h5py.File(
-            "does not matter", mode="w", driver="core", backing_store=False
-        ) as h5file:
+        with h5py.File("does not matter", mode="w", driver="core", backing_store=False) as h5file:
             model.save(
                 filepath=h5file,
                 include_optimizer=True,
@@ -255,9 +244,7 @@ class ModelSerializerBuilder:
             else:
                 return H5FullModelSerializer()
         else:
-            raise NotImplementedError(
-                f"Serializer of type {config.type} does not exist"
-            )
+            raise NotImplementedError(f"Serializer of type {config.type} does not exist")
 
 
 class WeightsSerializer(abc.ABC):
@@ -321,9 +308,7 @@ class WeightsSerializerBuilder:
             params: NpzWeightsSerializerConfig = config.params
             return NpzWeightsSerializer(compressed=params.compressed)
         else:
-            raise NotImplementedError(
-                f"Serializer of type {config.type} does not exist"
-            )
+            raise NotImplementedError(f"Serializer of type {config.type} does not exist")
 
 
 class ModelLoadError(Exception):
@@ -414,9 +399,7 @@ class SimpleModelLoader(ModelLoader):
             if self.compiled:
                 try:
                     if not self.loss or not self.optimizer:
-                        raise ModelLoadError(
-                            "If compiled=True, a loss has to be specified"
-                        )
+                        raise ModelLoadError("If compiled=True, a loss has to be specified")
                     loss = tf.keras.losses.get(self.loss)
                     metrics = self.metrics or []
                     optimizer = tf.keras.optimizers.get(self.optimizer)

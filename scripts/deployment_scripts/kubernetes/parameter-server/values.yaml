@@ -72,7 +72,14 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: { }
+nodeSelector:
+  data3: contains
+
+tolerations:
+- key: "data3"
+  operator: "Equal"
+  value: "contains"
+  effect: "NoSchedule"
 
 mongodbPort: 27017
 
@@ -81,6 +88,6 @@ secrets:
   mongodb_password: password
 restartPolicy: Always
 
-tolerations: [ ]
+# tolerations: [ ]
 
 affinity: { }

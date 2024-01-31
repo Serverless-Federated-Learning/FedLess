@@ -1,12 +1,11 @@
 import logging
 import time
-from typing import List, Dict, NamedTuple
+from typing import Dict, List, NamedTuple
 
 import boto3
 import requests
 from botocore.client import BaseClient
-
-from jose import jwk, jwt, JWTError
+from jose import JWTError, jwk, jwt
 from jose.utils import base64url_decode
 
 logger = logging.getLogger(__name__)
@@ -20,9 +19,7 @@ class NotAuthorizedException(AuthenticationError):
     pass
 
 
-def fetch_cognito_public_keys(
-    region: str, userpool_id: str, session: requests.Session = None
-) -> List[Dict]:
+def fetch_cognito_public_keys(region: str, userpool_id: str, session: requests.Session = None) -> List[Dict]:
     session = session or requests.Session()
     keys_url = f"https://cognito-idp.{region}.amazonaws.com/{userpool_id}/.well-known/jwks.json"
     try:
@@ -137,9 +134,7 @@ class CognitoClient:
             raise AuthenticationError(e) from e
         except KeyError as e:
             if "error" in response:
-                raise AuthenticationError(
-                    f"Auth server returned error: {response['error']}"
-                )
+                raise AuthenticationError(f"Auth server returned error: {response['error']}")
             raise AuthenticationError(f"Auth server did not return access token") from e
 
     def add_scope_to_client(self, client_id: str, scope: str):
@@ -178,18 +173,14 @@ class CognitoClient:
                     custom_args[field] = client_description[field]
 
             # Add new scope
-            custom_args["AllowedOAuthScopes"] = client_description.get(
-                "AllowedOAuthScopes", []
-            )
+            custom_args["AllowedOAuthScopes"] = client_description.get("AllowedOAuthScopes", [])
             custom_args["AllowedOAuthScopes"].append(scope)
 
             # Remove scopes from previously deleted resource servers, weirdly cognito doesn't remove those automatically
-            resource_servers = self.client.list_resource_servers(
-                UserPoolId=self.user_pool_id, MaxResults=50
-            )["ResourceServers"]
-            resource_server_identifiers = list(
-                server["Identifier"] for server in resource_servers
-            )
+            resource_servers = self.client.list_resource_servers(UserPoolId=self.user_pool_id, MaxResults=50)[
+                "ResourceServers"
+            ]
+            resource_server_identifiers = list(server["Identifier"] for server in resource_servers)
             custom_args["AllowedOAuthScopes"] = list(
                 scope
                 for scope in custom_args["AllowedOAuthScopes"]
@@ -197,9 +188,7 @@ class CognitoClient:
             )
 
             # Update credentials to allow invoker to also call new protected resource
-            self.client.update_user_pool_client(
-                UserPoolId=self.user_pool_id, ClientId=client_id, **custom_args
-            )
+            self.client.update_user_pool_client(UserPoolId=self.user_pool_id, ClientId=client_id, **custom_args)
             logger.info(
                 f"Succesfully added scope {scope} to client with name "
                 f"{client_description.get('ClientName')} and id {client_id}"
@@ -216,16 +205,13 @@ class CognitoClient:
         except self.client.exceptions.NotAuthorizedException as e:
             raise NotAuthorizedException(e) from e
 
-    def create_resource_server(
-        self, identifier: str, name: str, scopes: List[ResourceServerScope]
-    ) -> List[str]:
+    def create_resource_server(self, identifier: str, name: str, scopes: List[ResourceServerScope]) -> List[str]:
         """
         :return: List of strings representing the unique identifiers for the scopes of this resource-server
         """
         try:
             scopes_formatted = list(
-                {"ScopeName": scope.name, "ScopeDescription": scope.description}
-                for scope in scopes
+                {"ScopeName": scope.name, "ScopeDescription": scope.description} for scope in scopes
             )
             response = self.client.create_resource_server(
                 UserPoolId=self.user_pool_id,

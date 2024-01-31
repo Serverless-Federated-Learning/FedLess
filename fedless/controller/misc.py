@@ -1,7 +1,7 @@
 import asyncio
 import functools
-import os
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional, Type
 
@@ -11,7 +11,6 @@ import yaml
 from pydantic import ValidationError
 
 from fedless.common.auth import CognitoClient
-
 
 logger = logging.getLogger(__name__)
 

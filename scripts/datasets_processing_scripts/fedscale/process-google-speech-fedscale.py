@@ -1,10 +1,12 @@
 import csv
-import numpy as np
 import os
-from processing_utils import get_mel_and_label
 
+import numpy as np
+from fedscale.processing_utils import get_mel_and_label
 
 # mapp client number to sample list
+
+
 def get_fedscale_client_file_lists(mapping_file_path):
     fedscale_client_map = {}
     fedscale_unique_client_ids = {}
@@ -20,13 +22,9 @@ def get_fedscale_client_file_lists(mapping_file_path):
                 fedscale_client_id, sample_name = row[0], row[1]
                 if fedscale_client_id not in fedscale_unique_client_ids:
                     # add client idx to list of unique ids
-                    fedscale_unique_client_ids[fedscale_client_id] = len(
-                        fedscale_unique_client_ids
-                    )
+                    fedscale_unique_client_ids[fedscale_client_id] = len(fedscale_unique_client_ids)
                     fedscale_client_map[fedscale_client_id] = []
-                fedscale_client_map[fedscale_client_id] = fedscale_client_map[
-                    fedscale_client_id
-                ] + [sample_name]
+                fedscale_client_map[fedscale_client_id] = fedscale_client_map[fedscale_client_id] + [sample_name]
 
         print(len(fedscale_unique_client_ids))
         return fedscale_client_map
@@ -74,35 +72,26 @@ def createZip(dataset_path, client_files, output_name):
 
 MAPPING_PATH = "./google_speech/client_data_mapping/"
 DATASET_PATH = "./google_speech"
+data_type = "test"
 # ratio to the number of clients: each fedless client is responsible for the data of 8 fedscale clients
 # 8 for train 0-270
 # 1 for val 0-214
 # 1 for test 0-215
-# ratio = 1
-# fedscale_client_map = get_fedscale_client_file_lists(MAPPING_PATH + f"{data_type}.csv")
-# fedless_client_map = get_fedless_client_map(fedscale_client_map, ratio)
+ratio = 1
+fedscale_client_map = get_fedscale_client_file_lists(MAPPING_PATH + f"{data_type}.csv")
+fedless_client_map = get_fedless_client_map(fedscale_client_map, ratio)
+
+print(len(fedless_client_map))
 
 
-for data_type, ratio in zip(["train", "test", "val"], [8, 1, 1]):
-    print(f"prep data for: {data_type}")
-
-    save_path = f"./google_speech/npz/{data_type}/"
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
-
-    fedscale_client_map = get_fedscale_client_file_lists(
-        MAPPING_PATH + f"{data_type}.csv"
+s = 0
+for i in fedless_client_map:
+    s += len(fedless_client_map[i])
+    createZip(
+        DATASET_PATH + f"/{data_type}",
+        fedless_client_map[i],
+        f"./google_speech/npz/{data_type}/client_{i}.npz",
     )
-    fedless_client_map = get_fedless_client_map(fedscale_client_map, ratio)
-    print(len(fedless_client_map))
-    s = 0
-    for i in fedless_client_map:
-        s += len(fedless_client_map[i])
-        createZip(
-            DATASET_PATH + f"/{data_type}",
-            fedless_client_map[i],
-            f"{save_path}/client_{i}.npz",
-        )
-        print(f"saved data for client '{i}'")
+    print(f"saved data for client '{i}'")
 
 # make global test data

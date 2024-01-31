@@ -2,10 +2,7 @@ import logging
 
 from pydantic import ValidationError
 
-from fedless.client import (
-    fedless_mongodb_handler,
-    ClientError,
-)
+from fedless.client import ClientError, fedless_mongodb_handler
 from fedless.common.models import InvokerParams
 from fedless.common.providers import gcloud_http_error_handler
 

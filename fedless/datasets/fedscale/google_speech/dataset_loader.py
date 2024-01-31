@@ -1,18 +1,13 @@
+from enum import Enum
 from pathlib import Path
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional, Union
+
 import numpy as np
-
-from fedless.datasets.dataset_loaders import DatasetLoader
-
-from typing import Union, Dict, List, Optional
-
 import tensorflow as tf
-from pydantic import BaseModel, validate_arguments, AnyHttpUrl
+from pydantic import AnyHttpUrl, BaseModel, Field, validate_arguments
 
 from fedless.common.cache import cache
-
-from enum import Enum
-from pydantic import Field
+from fedless.datasets.dataset_loaders import DatasetLoader
 
 
 class FedScaleDataset(str, Enum):

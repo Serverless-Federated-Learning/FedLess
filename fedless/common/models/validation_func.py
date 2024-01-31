@@ -1,12 +1,10 @@
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from pydantic import BaseModel
 from pydantic.fields import ModelField
 
 
-def params_validate_types_match(
-    params: BaseModel, values: Dict, field: Optional[ModelField] = None
-):
+def params_validate_types_match(params: BaseModel, values: Dict, field: Optional[ModelField] = None):
     """
     Custom pydantic validator used together with :func:`pydantic.validator`.
     Can be used for :class:`BaseModel`'s that contain both a type and params attribute.
@@ -30,9 +28,7 @@ def params_validate_types_match(
     except KeyError:
         raise ValueError(f'Required field "type" not given.')
     except AttributeError:
-        raise ValueError(
-            f'Field "type" is missing in the class definition of model {params.__class__}'
-        )
+        raise ValueError(f'Field "type" is missing in the class definition of model {params.__class__}')
 
     if expected_type != params_type:
         raise TypeError(

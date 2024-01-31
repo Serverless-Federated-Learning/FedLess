@@ -3,14 +3,11 @@ import os
 
 from pydantic import ValidationError
 
-from fedless.client import (
-    fedless_mongodb_handler,
-    ClientError,
-)
+from fedless.client import ClientError, fedless_mongodb_handler
 from fedless.common.auth import (
-    verify_invoker_token,
-    fetch_cognito_public_keys,
     AuthenticationError,
+    fetch_cognito_public_keys,
+    verify_invoker_token,
 )
 from fedless.common.models import InvokerParams
 from fedless.common.providers import gcloud_http_error_handler
@@ -39,9 +36,7 @@ def http(request):
         global cached_public_keys
         if not cached_public_keys:
             print("Did not find public keys, fetching from server")
-            cached_public_keys = fetch_cognito_public_keys(
-                region=region, userpool_id=userpool_id
-            )
+            cached_public_keys = fetch_cognito_public_keys(region=region, userpool_id=userpool_id)
 
         if not verify_invoker_token(
             token=token,

@@ -1,15 +1,13 @@
 import logging
 import os
 from urllib import request
-from pydantic import ValidationError
+
 from flask import Flask, request
+from pydantic import ValidationError
 
 app = Flask(__name__)
 
-from fedless.client import (
-    fedless_mongodb_handler,
-    ClientError,
-)
+from fedless.client import ClientError, fedless_mongodb_handler
 from fedless.common.models import InvokerParams
 from fedless.common.providers import openfaas_action_handler
 

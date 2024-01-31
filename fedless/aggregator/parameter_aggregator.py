@@ -1,10 +1,7 @@
 import abc
-from typing import Iterator, List
+from typing import Iterator, List, Optional, Tuple
 
-from fedless.common.models import (
-    ClientResult,
-    AggregationResult,
-)
+from fedless.common.models import ClientResult, Parameters, TestMetrics
 
 
 class ParameterAggregator(abc.ABC):
@@ -19,6 +16,6 @@ class ParameterAggregator(abc.ABC):
 
     @abc.abstractmethod
     def aggregate(
-        self, client_results: Iterator[ClientResult], client_stats: List[dict]
-    ) -> AggregationResult:
+        self, client_results: Iterator[ClientResult], client_feats: List[dict]
+    ) -> Tuple[Parameters, Optional[List[TestMetrics]]]:
         pass

@@ -2,10 +2,7 @@ import logging
 
 from pydantic import ValidationError
 
-from fedless.client import (
-    default_handler,
-    ClientError,
-)
+from fedless.client import ClientError, default_handler
 from fedless.common.models import ClientInvocationParams
 from fedless.common.providers import lambda_proxy_handler
 

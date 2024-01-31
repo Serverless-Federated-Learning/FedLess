@@ -25,6 +25,8 @@ spec:
               subPath: nginx.conf
             - name: dataset-volume
               mountPath: /datasets
+      nodeSelector:
+        data2: contains
       volumes:
         - name: nginx-config
           configMap:
@@ -32,8 +34,10 @@ spec:
         - name: dataset-volume
           hostPath:
             path: /datasets
-            type: Directory
+            type: DirectoryOrCreate
+
       tolerations:
-      - key: "gpu"
-        operator: "Exists"
+      - key: "data2"
+        operator: "Equal"
+        value: "contains"
         effect: "NoSchedule"

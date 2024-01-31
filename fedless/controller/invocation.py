@@ -1,7 +1,7 @@
 import json
 import logging
 from json import JSONDecodeError
-from typing import Iterable, Optional, Dict, Union
+from typing import Dict, Iterable, Optional, Union
 
 import backoff
 import pymongo
@@ -11,31 +11,30 @@ from requests.adapters import HTTPAdapter
 # from requests.packages.urllib3.util.retry import Retry
 from urllib3.util import Retry
 
-
 from fedless.common.models import (
-    OpenwhiskActionConfig,
     ApiGatewayLambdaFunctionConfig,
-    FunctionInvocationConfig,
-    ClientInvocationParams,
-    InvocationResult,
-    MongodbConnectionConfig,
-    ModelLoaderConfig,
-    SimpleModelLoaderConfig,
-    GCloudFunctionConfig,
-    OpenwhiskWebActionConfig,
     AzureFunctionHTTPConfig,
-    SerializedParameters,
     BinaryStringFormat,
+    ClientInvocationParams,
+    FunctionInvocationConfig,
+    GCloudFunctionConfig,
+    InvocationResult,
+    ModelLoaderConfig,
+    MongodbConnectionConfig,
     OpenFaasFunctionConfig,
+    OpenwhiskActionConfig,
+    OpenwhiskWebActionConfig,
+    SerializedParameters,
+    SimpleModelLoaderConfig,
 )
-from fedless.common.serialization import Base64StringConverter
 from fedless.common.persistence.client_daos import (
     ClientConfigDao,
-    ParameterDao,
-    ModelDao,
     ClientResultDao,
+    ModelDao,
+    ParameterDao,
 )
 from fedless.common.persistence.mongodb_base_connector import PersistenceError
+from fedless.common.serialization import Base64StringConverter
 
 logger = logging.getLogger(__name__)
 
@@ -59,15 +58,12 @@ class InvocationTimeOut(InvocationError):
 def function_invoker_handler(
     session_id: str,
     round_id: int,
-    invocation_id: str,
     client_id: str,
     database: MongodbConnectionConfig,
     http_headers: Optional[Dict] = None,
     http_proxies: Optional[Dict] = None,
 ) -> InvocationResult:
-    logger.debug(
-        f"Invoker called for session {session_id} and client {client_id} for round {round_id}"
-    )
+    logger.debug(f"Invoker called for session {session_id} and client {client_id} for round {round_id}")
     db = pymongo.MongoClient(
         host=database.host,
         port=database.port,
@@ -80,7 +76,7 @@ def function_invoker_handler(
         config_dao = ClientConfigDao(db=db)
         model_dao = ModelDao(db=db)
         parameter_dao = ParameterDao(db=db)
-        result_dao = ClientResultDao(db=db)
+        results_dao = ClientResultDao(db=db)
 
         # Load model and latest weights
         logger.debug(f"Loading model from database")
@@ -126,7 +122,7 @@ def function_invoker_handler(
         logger.debug(f"Finished calling function")
         if isinstance(client_result, dict) and "parameters" in client_result:
             logger.debug(f"Storing results to db")
-            result_dao.save(
+            results_dao.save(
                 session_id=session_id,
                 round_id=round_id,
                 client_id=client_id,
@@ -134,14 +130,11 @@ def function_invoker_handler(
             )
         else:
             logger.error(f"Client invocation failed with response {client_result}")
-            raise InvocationError(
-                f"Client invocation failed with response {client_result}"
-            )
+            raise InvocationError(f"Client invocation failed with response {client_result}")
 
         return InvocationResult(
             session_id=session_id,
             round_id=round_id,
-            invocation_id=invocation_id,
             client_id=client_id,
         )
 
@@ -191,28 +184,18 @@ def invoke_sync(
         params: ApiGatewayLambdaFunctionConfig = function_config.params
         if params.api_key:
             session.headers.update({"X-api-key": params.api_key})
-        return invoke_http_function_sync(
-            url=params.apigateway, data=data, session=session, timeout=timeout
-        )
+        return invoke_http_function_sync(url=params.apigateway, data=data, session=session, timeout=timeout)
     elif function_config.type == "gcloud":
         params: GCloudFunctionConfig = function_config.params
-        return invoke_http_function_sync(
-            url=params.url, data=data, session=session, timeout=timeout
-        )
+        return invoke_http_function_sync(url=params.url, data=data, session=session, timeout=timeout)
     elif function_config.type == "azure":
         params: AzureFunctionHTTPConfig = function_config.params
-        return invoke_http_function_sync(
-            url=params.trigger_url, data=data, session=session, timeout=timeout
-        )
+        return invoke_http_function_sync(url=params.trigger_url, data=data, session=session, timeout=timeout)
     elif function_config.type == "openfaas":
         params: OpenFaasFunctionConfig = function_config.params
-        return invoke_http_function_sync(
-            url=params.url, data=data, session=session, timeout=timeout
-        )
+        return invoke_http_function_sync(url=params.url, data=data, session=session, timeout=timeout)
     else:
-        raise NotImplementedError(
-            f"Function of type {function_config.type} not supported"
-        )
+        raise NotImplementedError(f"Function of type {function_config.type} not supported")
 
 
 def invoke_http_function_sync(
@@ -238,20 +221,11 @@ def invoke_http_function_sync(
             proxies=session.proxies,
             timeout=timeout,
         )
-
-        if (
-            response.ok
-            or response.status_code == 400
-            and "errorMessage" in response.text
-        ):
+        if response.ok or response.status_code == 400 and "errorMessage" in response.text:
             return response.json()
         elif response.status_code == 504:
-            raise InvocationTimeOut(
-                f"504 Server Error: Gateway Timeout for url: {response.url}"
-            )
+            raise InvocationTimeOut(f"504 Server Error: Gateway Timeout for url: {response.url}")
         response.raise_for_status()
-    except requests.exceptions.ReadTimeout as e:
-        raise InvocationTimeOut(f"Socket read timeout for url: {url}")
     except requests.exceptions.RequestException as e:
         raise InvocationError(e) from e
     except ValueError as e:
@@ -272,10 +246,7 @@ def invoke_wsk_action_async(
     if isinstance(data, dict):
         data = json.dumps(data)
 
-    action_url = (
-        f"https://{auth_token}@{api_host}/api/v1/"
-        f"namespaces/_/actions/{action_name}?blocking=false"
-    )
+    action_url = f"https://{auth_token}@{api_host}/api/v1/" f"namespaces/_/actions/{action_name}?blocking=false"
 
     try:
         response = session.post(
@@ -312,10 +283,7 @@ def _fetch_openwhisk_activation_result(
             proxies=session.proxies,
         )
 
-        if (
-            response.status_code == 404
-            and "The requested resource does not exist." in response.text
-        ):
+        if response.status_code == 404 and "The requested resource does not exist." in response.text:
             return None
 
         response.raise_for_status()
@@ -344,9 +312,9 @@ def poll_openwhisk_activation_result(
 ):
     """Poll result for given activation id (blocking)"""
 
-    _fetch_and_retry = backoff.on_predicate(
-        backoff.constant, max_time=max_time, interval=interval, logger=None
-    )(_fetch_openwhisk_activation_result)
+    _fetch_and_retry = backoff.on_predicate(backoff.constant, max_time=max_time, interval=interval, logger=None)(
+        _fetch_openwhisk_activation_result
+    )
     result = _fetch_and_retry(
         activation_id=activation_id,
         api_host=api_host,

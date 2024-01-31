@@ -1,26 +1,24 @@
-import os
 import logging
+import os
 
 import azure.functions
 from pydantic import ValidationError
 
+from fedless.client import ClientError, fedless_mongodb_handler
 from fedless.common.auth import (
     AuthenticationError,
     fetch_cognito_public_keys,
     verify_invoker_token,
 )
-from fedless.common.providers import azure_handler
 from fedless.common.models import InvokerParams
-from fedless.client import fedless_mongodb_handler, ClientError
+from fedless.common.providers import azure_handler
 
 logging.basicConfig(level=logging.DEBUG)
 
 cached_public_keys = None
 
 
-@azure_handler(
-    caught_exceptions=(ValidationError, ValueError, ClientError, AuthenticationError)
-)
+@azure_handler(caught_exceptions=(ValidationError, ValueError, ClientError, AuthenticationError))
 def main(req: azure.functions.HttpRequest):
     try:
         region = os.environ.get("COGNITO_USER_POOL_REGION")
@@ -34,9 +32,7 @@ def main(req: azure.functions.HttpRequest):
         global cached_public_keys
         if not cached_public_keys:
             print("Did not find public keys, fetching from server")
-            cached_public_keys = fetch_cognito_public_keys(
-                region=region, userpool_id=userpool_id
-            )
+            cached_public_keys = fetch_cognito_public_keys(region=region, userpool_id=userpool_id)
 
         if not verify_invoker_token(
             token=token,

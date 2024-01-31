@@ -1,7 +1,7 @@
 from tensorflow import keras
 
 
-def create_mnist_cnn(num_classes=10, optimizer="adam"):
+def create_mnist_cnn(num_classes=10):
     model = keras.models.Sequential(
         [
             keras.layers.InputLayer((28, 28)),
@@ -25,7 +25,7 @@ def create_mnist_cnn(num_classes=10, optimizer="adam"):
     )
 
     model.compile(
-        optimizer=optimizer,
+        optimizer="adam",
         loss="sparse_categorical_crossentropy",
         metrics=["accuracy"],
     )

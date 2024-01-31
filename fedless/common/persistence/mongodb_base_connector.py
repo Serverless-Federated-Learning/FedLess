@@ -1,10 +1,9 @@
 from contextlib import AbstractContextManager
-from typing import Union, Callable
+from typing import Callable, Union
 
 import pymongo
-
 from pymongo.collection import Collection
-from pymongo.errors import InvalidName, PyMongoError, BSONError
+from pymongo.errors import BSONError, InvalidName, PyMongoError
 
 from fedless.common.models import MongodbConnectionConfig
 
