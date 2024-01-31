@@ -1,0 +1,385 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:31112
+functions:
+  client-indep-81:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-81
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-82:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-82
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-83:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-83
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-84:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-84
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-85:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-85
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-86:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-86
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-87:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-87
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-88:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-88
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-89:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-89
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-90:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-90
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+
+  client-indep-91:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-91
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-92:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-92
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-93:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-93
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-94:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-94
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-95:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-95
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-96:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-96
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-97:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-97
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-98:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-98
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-99:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-99
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m
+
+  client-indep-100:
+    lang: python3-http-debian
+    handler: ./client-indep
+    image: pulkitkhera97/faas-func-fedless-kd-100
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 4000m
+      memory: 4000Mi
+    requests:
+      cpu: 500m
+      memory: 2000Mi
+    environment:
+      write_timeout: 20m
+      read_timeout: 20m
+      exec_timeout: 20m
+      upstream_timeout: 19m55s
+      handler_wait_duration: 2m

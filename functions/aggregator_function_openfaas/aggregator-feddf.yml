@@ -1,0 +1,187 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:31112
+  
+functions:
+  aggregator-1:
+    lang: python3-http-debian
+    handler: ./aggregator
+    image: pulkitkhera97/faas-aggr-fedless-kd-1
+    # labels:
+    #   com.openfaas.scale.min: 1
+    #   com.openfaas.scale.max: 5
+    #   com.openfaas.scale.factor: 100
+
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 6000m
+      memory: 16000Mi
+    requests:
+      cpu: 4000m
+      memory: 6000Mi
+    environment:
+      write_timeout: 50m
+      read_timeout: 50m
+      exec_timeout: 50m
+      upstream_timeout: 49m55s
+      handler_wait_duration: 8m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
+
+  aggregator-2:
+    lang: python3-http-debian
+    handler: ./aggregator
+    image: pulkitkhera97/faas-aggr-fedless-kd-2
+    # labels:
+    #   com.openfaas.scale.min: 1
+    #   com.openfaas.scale.max: 5
+    #   com.openfaas.scale.factor: 100
+
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 6000m
+      memory: 16000Mi
+    requests:
+      cpu: 4000m
+      memory: 6000Mi
+    environment:
+      write_timeout: 50m
+      read_timeout: 50m
+      exec_timeout: 50m
+      upstream_timeout: 49m55s
+      handler_wait_duration: 8m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
+
+  aggregator-3:
+    lang: python3-http-debian
+    handler: ./aggregator
+    image: pulkitkhera97/faas-aggr-fedless-kd-3
+    # labels:
+    #   com.openfaas.scale.min: 1
+    #   com.openfaas.scale.max: 5
+    #   com.openfaas.scale.factor: 100
+
+    build_args:
+      ADDITIONAL_PACKAGE: git
+    limits:
+      cpu: 6000m
+      memory: 16000Mi
+    requests:
+      cpu: 4000m
+      memory: 6000Mi
+    environment:
+      write_timeout: 50m
+      read_timeout: 50m
+      exec_timeout: 50m
+      upstream_timeout: 49m55s
+      handler_wait_duration: 8m
+      # https_proxy: http://proxy.in.tum.de:8080/
+      # http_proxy: http://proxy.in.tum.de:8080/
+
+  # aggregator-4:
+  #   lang: python3-http-debian
+  #   handler: ./aggregator
+  #   image: pulkitkhera97/faas-aggr-fedless-kd-4
+  #   # labels:
+  #   #   com.openfaas.scale.min: 1
+  #   #   com.openfaas.scale.max: 5
+  #   #   com.openfaas.scale.factor: 100
+
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 6000m
+  #     memory: 16000Mi
+  #   requests:
+  #     cpu: 4000m
+  #     memory: 6000Mi
+  #   environment:
+  #     write_timeout: 50m
+  #     read_timeout: 50m
+  #     exec_timeout: 50m
+  #     upstream_timeout: 49m55s
+  #     handler_wait_duration: 8m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     # http_proxy: http://proxy.in.tum.de:8080/
+
+  # aggregator-5:
+  #   lang: python3-http-debian
+  #   handler: ./aggregator
+  #   image: pulkitkhera97/faas-aggr-fedless-kd-5
+  #   # labels:
+  #   #   com.openfaas.scale.min: 1
+  #   #   com.openfaas.scale.max: 5
+  #   #   com.openfaas.scale.factor: 100
+
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 6000m
+  #     memory: 16000Mi
+  #   requests:
+  #     cpu: 4000m
+  #     memory: 6000Mi
+  #   environment:
+  #     write_timeout: 50m
+  #     read_timeout: 50m
+  #     exec_timeout: 50m
+  #     upstream_timeout: 49m55s
+  #     handler_wait_duration: 8m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     # http_proxy: http://proxy.in.tum.de:8080/
+
+  # aggregator-6:
+  #   lang: python3-http-debian
+  #   handler: ./aggregator
+  #   image: pulkitkhera97/faas-aggr-fedless-kd-6
+  #   # labels:
+  #   #   com.openfaas.scale.min: 1
+  #   #   com.openfaas.scale.max: 5
+  #   #   com.openfaas.scale.factor: 100
+
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 6000m
+  #     memory: 16000Mi
+  #   requests:
+  #     cpu: 4000m
+  #     memory: 6000Mi
+  #   environment:
+  #     write_timeout: 50m
+  #     read_timeout: 50m
+  #     exec_timeout: 50m
+  #     upstream_timeout: 49m55s
+  #     handler_wait_duration: 8m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     # http_proxy: http://proxy.in.tum.de:8080/
+
+  # aggregator:
+  #   lang: python3-http-debian
+  #   handler: ./aggregator
+  #   image: pulkitkhera97/fedless-ofaas:aggr
+  #   # labels:
+  #   #   com.openfaas.scale.min: 1
+  #   #   com.openfaas.scale.max: 5
+  #   #   com.openfaas.scale.factor: 100
+
+  #   build_args:
+  #     ADDITIONAL_PACKAGE: git
+  #   limits:
+  #     cpu: 6000m
+  #     memory: 8000Mi
+  #   requests:
+  #     cpu: 2000m
+  #     memory: 4000Mi
+  #   environment:
+  #     write_timeout: 20m
+  #     read_timeout: 20m
+  #     exec_timeout: 20m
+  #     upstream_timeout: 19m55s
+  #     handler_wait_duration: 8m
+  #     # https_proxy: http://proxy.in.tum.de:8080/
+  #     # http_proxy: http://proxy.in.tum.de:8080/
